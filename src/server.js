@@ -14,48 +14,51 @@ var Campus = sequelize.define('campus', {
 });
 
 Campus
-.sync() // Will check for table when created
-.then(function(){
-    console.log("Campus is now ready to be used");
-})
-.catch( err => {
-    console.log(err);
-});
+    .sync() // Will check for table when created
+    .then(function () {
+        console.log("Campus is now ready to be used");
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
 // Parse info coming in
-app.use( bodyParser.json() );
+app.use(bodyParser.json());
 app.use(express.json());
 
 // Connecting us to the database
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
- 
+});
+
 // Taking info from inputs  
 app.get('/campus', function (req, res) {
-	let name;
-	let address;
-	let allInfo = "";
+    let name;
+    let address;
+    let phone_number;
+    let cuny;
+    let allInfo = "";
 
-	Campus.findAll().then(function(rows) {
-		for(var i = 0; i < rows.length; i++) {
-			var columnData = rows[i].dataValues;
-			name = columnData.name;
-			address = columnData.address;
-			phone_number = columnData.phone_number;
-			cuny = columnData.cuny;
-			allInfo = allInfo  + "\n" + name + " " + address + " " + phone_number + " " + cuny;
-		}
-        // console.log(allInfo)
+    // This function should be somewhere in campuslisting so the results display
+    Campus.findAll().then(function (rows) {
+        for (var i = 0; i < rows.length; i++) {
+            var columnData = rows[i].dataValues;
+            name = columnData.name;
+            address = columnData.address;
+            phone_number = columnData.phone_number;
+            cuny = columnData.cuny;
+            allInfo = allInfo + "\n" + name + " " + address + " " + phone_number + " " + cuny;
+        }
+        //console.log(allInfo)
         res.send(allInfo);
         console.log("SOMETHING HERE");
-	});
+    });
 });
 
 //Sending info to database
-app.post('/campus', function (req, res){
+app.post('/campus', function (req, res) {
 
     Campus.create({
         name: req.body.name,
@@ -65,12 +68,12 @@ app.post('/campus', function (req, res){
     });
 
     console.log("I'm here")
-    console.log(req.body);
+    console.log(req.body.name);
 });
 // console.log("yeas");
 
 app.listen(3000, function () {
-console.log('App listening on port 3000!');
+    console.log('App listening on port 3000!');
 });
 
 // var sequelize = new Sequelize('postgres', 'postgres', 'password', {
@@ -100,7 +103,7 @@ console.log('App listening on port 3000!');
 //             console.log(res)
 //         }
 //         data = JSON.stringify(res);
-        
+
 
 //     })
 //     .catch(e => console.log(e.stack));
